@@ -1,0 +1,39 @@
+<section class="insurance-package">
+  <h1 class="section-title">Insurance Riders</h1>
+
+  <div
+    class="variants-grid"
+    [style.--variants-count]="displayedVariantCount"
+    [style.--variant-min-width]="variantMinWidthRem"
+  >
+    <div class="grid-header rider-column-header">Rider</div>
+
+    @for (variantIndex of visibleVariantIndexes; track variantIndex) {
+      <div class="grid-header variant-column-header">Variant {{ variantIndex + 1 }}</div>
+    }
+
+    @for (rider of riders; track rider.riderName) {
+      <div class="rider-name">{{ rider.riderName }}</div>
+
+      @for (variantIndex of visibleVariantIndexes; track variantIndex) {
+        <article
+          class="variant-card"
+          [class.selected]="getVariantAt(rider, variantIndex)?.selected"
+        >
+          @if (getVariantAt(rider, variantIndex); as variant) {
+            <p class="value">
+              <span class="label">Premium:</span>
+              {{ variant.premium | currency: 'USD':'symbol':'1.2-2' }}
+            </p>
+            <p class="value"><span class="label">Sum:</span> {{ variant.sum | number }}</p>
+            <p class="state" [class.active]="variant.selected">
+              {{ variant.selected ? 'Selected' : 'Not selected' }}
+            </p>
+          } @else {
+            <p class="empty-state">No variant</p>
+          }
+        </article>
+      }
+    }
+  </div>
+</section>
