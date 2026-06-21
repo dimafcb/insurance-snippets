@@ -1,0 +1,140 @@
+@use '../layout' as *;
+
+:host {
+  display: block;
+  --rider-name-width: 20;
+  --variant-fit-min-width: 16;
+  --rider-grid-gap: 1;
+}
+
+.page-card {
+  @include page-card;
+}
+
+.section-title {
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
+}
+
+.slice-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 0.5rem;
+  margin-bottom: calc(var(--rider-grid-gap) * 1rem);
+}
+
+.slice-button {
+  border: 1px solid #d7dde5;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+}
+
+.slice-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.rider-grid-card {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+
+.variants-viewport {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.variants-viewport.compact {
+  padding-inline: 0;
+}
+
+.variants-grid {
+  display: grid;
+  gap: calc(var(--rider-grid-gap) * 1rem);
+  width: 100%;
+  min-width: 0;
+}
+
+.group-row-title {
+  grid-column: 1 / -1;
+  font-weight: 700;
+  color: #445166;
+  margin-top: 0.25rem;
+}
+
+.grid-header {
+  font-weight: 700;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: #eef2f7;
+}
+
+.rider-name {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: #f7fafc;
+  font-weight: 600;
+  align-self: stretch;
+}
+
+.variants-count {
+  font-size: 0.8rem;
+  color: #5f6b7a;
+  font-weight: 500;
+}
+
+.variant-card {
+  border: 1px solid #d7dde5;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  background: #ffffff;
+}
+
+.variant-card.selected {
+  border-color: #22863a;
+  background: #f3fff5;
+}
+
+.value,
+.state,
+.empty-state {
+  margin: 0;
+}
+
+.value + .value,
+.value + .state {
+  margin-top: 0.35rem;
+}
+
+.label {
+  font-weight: 600;
+  margin-right: 0.25rem;
+}
+
+.state {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #566273;
+}
+
+.state.active {
+  color: #1f7a34;
+  font-weight: 600;
+}
+
+.empty-state {
+  color: #6c7a89;
+}
+
+@media (max-width: 1280px) {
+  :host {
+    --rider-name-width: 14;
+    --variant-fit-min-width: 16;
+  }
+}

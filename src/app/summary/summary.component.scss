@@ -1,0 +1,72 @@
+@use '../layout' as *;
+
+:host {
+  display: block;
+}
+
+.page-card {
+  @include page-card;
+}
+
+.section-title {
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.summary-header h3 {
+  margin: 0 0 0.25rem;
+}
+
+.insured-name {
+  margin: 0;
+  color: #666;
+}
+
+.plan-tier {
+  background: #f0c419;
+  color: #3d3200;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.summary-totals {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.totals-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.totals-item .label {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.totals-item .value {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.riders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.riders-table th,
+.riders-table td {
+  text-align: left;
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}

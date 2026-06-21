@@ -1,0 +1,14 @@
+<section class="page-card">
+  <h2 class="section-title">Products</h2>
+
+  <div class="product-grid">
+    <div class="product-card" *ngFor="let product of products">
+      <span class="category">{{ product.category }}</span>
+      <h3>{{ product.name }}</h3>
+      <p class="description">{{ product.description }}</p>
+      <p class="starting-premium">
+        From {{ product.startingPremium | currency }}<span class="per-month">/mo</span>
+      </p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,70 @@
+@let riderGroups = visibleRiderGroups$ | async;
+@let visibleVariantCount = visibleVariantCount$ | async;
+@let totalVariantsCount = totalVariantsCount$ | async;
+@let canSliceLeft = canSliceLeft$ | async;
+@let canSliceRight = canSliceRight$ | async;
+@let filteredAndPaginatedVariants = filteredAndPaginatedVariants$ | async;
+
+<section class="page-card">
+  <div class="slice-controls">
+    <button
+      type="button"
+      class="slice-button"
+      (click)="sliceVariants('left')"
+      [disabled]="!canSliceLeft"
+      aria-label="Slice variants left"
+    >
+      ← Poprzedni
+    </button>
+
+    <button type="button" class="slice-button" (click)="getRandomVariantsCount()">
+      Warianty: {{ totalVariantsCount }} (widoczne: {{ visibleVariantCount }})
+    </button>
+
+    <button
+      type="button"
+      class="slice-button"
+      (click)="sliceVariants('right')"
+      [disabled]="!canSliceRight"
+      aria-label="Slice variants right"
+    >
+      Następny →
+    </button>
+  </div>
+
+  <div class="rider-grid-card">
+    <div #variantsViewport class="variants-viewport">
+      <div class="variants-grid" [style]="gridStyles$ | async">
+        <div class="grid-header rider-column-header">Rider</div>
+
+        @for (variantIndex of filteredAndPaginatedVariants?.variantIndexes ?? []; track variantIndex) {
+          <div class="grid-header variant-column-header">Variant {{ variantIndex + 1 }}</div>
+        }
+
+        @for (group of riderGroups; track group.groupName) {
+          <div class="group-row-title">{{ group.groupName }}</div>
+
+          @for (rider of group.riders; track rider.riderName) {
+            <div class="rider-name">
+              {{ rider.riderName }}
+              <span class="variants-count">(total: {{ rider.variantsCount }})</span>
+            </div>
+
+            @for (variant of rider.variants; track $index) {
+              <article class="variant-card" [class.selected]="variant.selected">
+                <p class="value">
+                  <span class="label">Premium:</span>
+                  {{ variant.premium | currency: 'USD' : 'symbol' : '1.2-2' }}
+                </p>
+                <p class="value"><span class="label">Sum:</span> {{ variant.sum | number }}</p>
+                <p class="state" [class.active]="variant.selected">
+                  {{ variant.selected ? 'Selected' : 'Not selected' }}
+                </p>
+              </article>
+            }
+          }
+        }
+      </div>
+    </div>
+  </div>
+</section>

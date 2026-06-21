@@ -1,0 +1,40 @@
+<section class="page-card">
+  <h2 class="section-title">Policy Summary</h2>
+
+  <div class="summary-header">
+    <div>
+      <h3>{{ summary.policyName }}</h3>
+      <p class="insured-name">Insured: {{ summary.insuredName }}</p>
+    </div>
+    <span class="plan-tier">{{ summary.planTier }}</span>
+  </div>
+
+  <div class="summary-totals">
+    <div class="totals-item">
+      <span class="label">Monthly Premium</span>
+      <span class="value">{{ summary.monthlyPremium | currency }}</span>
+    </div>
+    <div class="totals-item">
+      <span class="label">Total Sum Insured</span>
+      <span class="value">{{ summary.totalSumInsured | currency }}</span>
+    </div>
+  </div>
+
+  <h4>Selected Riders</h4>
+  <table class="riders-table">
+    <thead>
+      <tr>
+        <th>Rider</th>
+        <th>Sum Insured</th>
+        <th>Premium</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let rider of summary.riders">
+        <td>{{ rider.riderName }}</td>
+        <td>{{ rider.sum | currency }}</td>
+        <td>{{ rider.premium | currency }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>

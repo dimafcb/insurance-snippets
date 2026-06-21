@@ -1,0 +1,28 @@
+<nav class="app-nav">
+  <a routerLink="/insurance-package" routerLinkActive="active">Insurance Package</a>
+  <a routerLink="/summary" routerLinkActive="active">Summary</a>
+  <a routerLink="/product" routerLinkActive="active">Product</a>
+</nav>
+
+<div class="page-shell">
+  <div class="package-layout">
+    <aside class="process-info">
+      <div class="card">processInfo</div>
+    </aside>
+
+    <div class="grid-main">
+      <router-outlet></router-outlet>
+    </div>
+
+    <aside class="side-panel">
+      <div class="card side-panel-card">
+        @for (action of sidePanelActions; track action.label) {
+          <button type="button" class="side-panel-button">
+            <span class="icon">{{ action.icon }}</span>
+            <span class="label">{{ action.label }}</span>
+          </button>
+        }
+      </div>
+    </aside>
+  </div>
+</div>

@@ -1,0 +1,153 @@
+@use 'layout' as *;
+
+:host {
+  display: block;
+  --rider-grid-gap: 1;
+}
+
+.app-nav {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.app-nav a {
+  color: #444;
+  text-decoration: none;
+  font-weight: 500;
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid transparent;
+}
+
+.app-nav a:hover {
+  color: #000;
+}
+
+.app-nav a.active {
+  color: #3b3fa1;
+  border-bottom-color: #3b3fa1;
+}
+
+.page-shell {
+  container-name: page-shell;
+  container-type: inline-size;
+}
+
+.package-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(#{$process-info-width}, 1fr) minmax(0, 1fr)
+    minmax(#{$side-panel-width}, 1fr);
+  grid-template-areas: 'process main side';
+  align-items: start;
+  padding: 1rem;
+}
+
+.package-layout .process-info,
+.package-layout .side-panel {
+  position: sticky;
+  top: 2rem;
+}
+
+.grid-main {
+  grid-area: main;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.process-info {
+  grid-area: process;
+}
+
+.side-panel {
+  grid-area: side;
+}
+
+.process-info,
+.side-panel {
+  box-sizing: border-box;
+  display: flex;
+  min-height: 6rem;
+  background: #fff2e0;
+}
+
+.process-info {
+  justify-content: flex-end;
+  padding-right: 1rem;
+}
+
+.side-panel {
+  justify-content: flex-start;
+}
+
+.process-info .card {
+  @include page-card;
+  flex: 0 0 #{$process-info-width};
+  width: #{$process-info-width};
+}
+
+.side-panel .card {
+  @include page-card;
+  flex: 0 0 #{$side-panel-width};
+  width: #{$side-panel-width};
+}
+
+.side-panel-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.side-panel-button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  border: 1px solid #d7dde5;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.side-panel-button:hover {
+  background: #eef2ff;
+  border-color: #3b3fa1;
+}
+
+.side-panel-button .icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+// Per-page collapse driven by each page component's optimal content width.
+@include page-layout-containers;
+
+// Outer fallback: collapse to stacked layout regardless of page once the
+// shell can no longer fit both panel minimums plus a usable main column.
+// `:has()`'s specificity comes from its most specific argument, so
+// `:has(app-insurance-package)` outranks a plain `.package-layout` (or
+// `:has(*)`, whose argument is the zero-specificity universal selector).
+// Repeating every page selector here keeps specificity equal so this rule
+// reliably wins once nested inside the narrower @container below.
+@container page-shell (width < 55rem) {
+  @each $selector, $width in $page-optimal-widths {
+    .package-layout:has(#{$selector}) {
+      @include stacked-layout;
+      @include stacked-centering($width);
+    }
+
+    .package-layout:has(#{$selector}) .process-info,
+    .package-layout:has(#{$selector}) .side-panel {
+      @include stacked-panels;
+    }
+
+    .package-layout:has(#{$selector}) .process-info .card,
+    .package-layout:has(#{$selector}) .side-panel .card {
+      @include stacked-panel-card;
+    }
+  }
+}
