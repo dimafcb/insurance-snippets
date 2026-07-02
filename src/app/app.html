@@ -5,7 +5,7 @@
 </nav>
 
 <div class="page-shell">
-  <div class="package-layout">
+  <div class="sof-layout">
     <aside class="process-info">
       <div class="card">processInfo</div>
     </aside>
@@ -15,14 +15,7 @@
     </div>
 
     <aside class="side-panel">
-      <div class="card side-panel-card">
-        @for (action of sidePanelActions; track action.label) {
-          <button type="button" class="side-panel-button">
-            <span class="icon">{{ action.icon }}</span>
-            <span class="label">{{ action.label }}</span>
-          </button>
-        }
-      </div>
+      <app-side-panel></app-side-panel>
     </aside>
   </div>
 </div>

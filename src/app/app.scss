@@ -34,7 +34,7 @@
   container-type: inline-size;
 }
 
-.package-layout {
+.sof-layout {
   display: grid;
   grid-template-columns:
     minmax(#{$process-info-width}, 1fr) minmax(0, 1fr)
@@ -44,8 +44,8 @@
   padding: 1rem;
 }
 
-.package-layout .process-info,
-.package-layout .side-panel {
+.sof-layout .process-info,
+.sof-layout .side-panel {
   position: sticky;
   top: 2rem;
 }
@@ -87,67 +87,46 @@
   width: #{$process-info-width};
 }
 
-.side-panel .card {
-  @include page-card;
+.side-panel app-side-panel {
+  display: block;
   flex: 0 0 #{$side-panel-width};
   width: #{$side-panel-width};
-}
-
-.side-panel-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.side-panel-button {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  width: 100%;
-  border: 1px solid #d7dde5;
-  border-radius: 0.5rem;
-  background: #ffffff;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.9rem;
-  text-align: left;
-  cursor: pointer;
-}
-
-.side-panel-button:hover {
-  background: #eef2ff;
-  border-color: #3b3fa1;
-}
-
-.side-panel-button .icon {
-  font-size: 1.1rem;
-  line-height: 1;
 }
 
 // Per-page collapse driven by each page component's optimal content width.
 @include page-layout-containers;
 
-// Outer fallback: collapse to stacked layout regardless of page once the
-// shell can no longer fit both panel minimums plus a usable main column.
+// Outer fallback: collapse to the two-column layout regardless of page once
+// the shell can no longer fit both panel minimums plus a usable main column.
 // `:has()`'s specificity comes from its most specific argument, so
-// `:has(app-insurance-package)` outranks a plain `.package-layout` (or
+// `:has(app-insurance-package)` outranks a plain `.sof-layout` (or
 // `:has(*)`, whose argument is the zero-specificity universal selector).
 // Repeating every page selector here keeps specificity equal so this rule
 // reliably wins once nested inside the narrower @container below.
 @container page-shell (width < 55rem) {
-  @each $selector, $width in $page-optimal-widths {
-    .package-layout:has(#{$selector}) {
-      @include stacked-layout;
-      @include stacked-centering($width);
+  @each $selector, $width in $page-widths {
+    $optimal: optimal-width($width);
+
+    .sof-layout:has(#{$selector}) {
+      @include two-column-layout;
+      @include two-column-centering($optimal);
     }
 
-    .package-layout:has(#{$selector}) .process-info,
-    .package-layout:has(#{$selector}) .side-panel {
-      @include stacked-panels;
+    .sof-layout:has(#{$selector}) .process-info,
+    .sof-layout:has(#{$selector}) .side-panel {
+      @include two-column-panels;
     }
 
-    .package-layout:has(#{$selector}) .process-info .card,
-    .package-layout:has(#{$selector}) .side-panel .card {
-      @include stacked-panel-card;
+    .sof-layout:has(#{$selector}) .process-info .card {
+      @include two-column-panel-card;
+    }
+
+    .sof-layout:has(#{$selector}) .side-panel {
+      @include two-column-layout-flag;
+    }
+
+    .sof-layout:has(#{$selector}) .side-panel app-side-panel {
+      @include two-column-panel-card;
     }
   }
 }

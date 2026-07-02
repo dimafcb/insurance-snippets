@@ -1,0 +1,61 @@
+@use '../layout' as *;
+
+:host {
+  display: block;
+}
+
+.card {
+  @include page-card;
+}
+
+.side-panel-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.side-panel-button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  border: 1px solid #d7dde5;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.side-panel-button:hover {
+  background: #eef2ff;
+  border-color: #3b3fa1;
+}
+
+.side-panel-button .icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+// `--two-column-layout` is set by app.scss on `.side-panel` (the grid item
+// hosting this component) inside its existing @container page-shell width
+// queries, and inherits down into this component regardless of Angular's
+// view encapsulation boundary. Reading it here via an unnamed style query
+// lets this file react to the two-column layout without needing to know
+// per-page breakpoints itself. Deliberately unnamed: Chromium does not
+// resolve `@container page-shell style(...)` against a container whose
+// name was declared for size containment only (`container-name: page-shell`
+// on .page-shell) — the unnamed form reliably walks to the nearest
+// ancestor where the property is set instead.
+@container style(--two-column-layout: true) {
+  .side-panel-card {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .side-panel-button {
+    width: auto;
+    flex: 1 1 auto;
+  }
+}

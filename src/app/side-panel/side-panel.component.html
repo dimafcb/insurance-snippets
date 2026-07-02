@@ -1,0 +1,8 @@
+<div class="card side-panel-card">
+  @for (action of actions; track action.label) {
+    <button type="button" class="side-panel-button">
+      <span class="icon">{{ action.icon }}</span>
+      <span class="label">{{ action.label }}</span>
+    </button>
+  }
+</div>

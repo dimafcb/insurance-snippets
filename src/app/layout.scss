@@ -1,18 +1,28 @@
-// Optimal content width per page component. This drives the main column's
-// track size in the 3-column layout. The page shell collapses to a stacked
-// 2-column layout (process-info and side-panel move above the router
-// outlet) once its width drops below process-info + this width + side-panel
-// combined. `max` means the page always wants full available width: the
-// main track stays `minmax(0, 1fr)` and the page never collapses on its own
-// account (only the outer minimum-width fallback can still collapse it).
-$page-optimal-widths: (
-  'app-insurance-package': max,
-  'app-summary': 50rem,
-  'app-product': 35rem,
+@use 'sass:map';
+
+// Per-page main column sizing. Each entry is a map of:
+//   optimal: the width that drives the two-column-layout breakpoint (see
+//            page-layout-containers). `max` means the page always wants
+//            full available width instead of a fixed rem value.
+//   min:     (optional) floor for the main track's minmax(), so the page
+//            never shrinks the main column below this even while still wide
+//            enough to stay in the three-column layout. Only meaningful for
+//            `optimal: max` pages — fixed-optimal pages already use their
+//            own width as a hard minmax() floor.
+$page-widths: (
+  'app-insurance-package': (optimal: max, min: 50rem),
+  'app-summary': (optimal: 50rem),
+  'app-product': (optimal: 35rem),
 );
 
 $process-info-width: 21rem;
 $side-panel-width: 14rem;
+
+// Reads the `optimal` field out of a $page-widths entry, so consumers
+// don't need their own `@use 'sass:map'` just to read one field.
+@function optimal-width($width) {
+  @return map.get($width, optimal);
+}
 
 @mixin page-card {
   box-sizing: border-box;
@@ -22,17 +32,18 @@ $side-panel-width: 14rem;
   padding: 1rem;
 }
 
-@mixin stacked-layout {
+@mixin two-column-layout {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-areas:
     'process side'
     'main main';
 }
 
-// Caps the stacked layout's width to the page's own optimal content width
-// (e.g. product stays 35rem wide even while stacked), falling back to
-// 55rem for `max`-width pages, which have no optimal width of their own.
-@mixin stacked-centering($width: max) {
+// Caps the two-column layout's width to the page's own optimal content
+// width (e.g. product stays 35rem wide even in the two-column layout),
+// falling back to 55rem for `max`-width pages, which have no optimal width
+// of their own.
+@mixin two-column-centering($width: max) {
   @if $width == max {
     max-width: 55rem;
   } @else {
@@ -42,53 +53,86 @@ $side-panel-width: 14rem;
 }
 
 // Panels lose their sticky offset and their "hug the main card" styling
-// once stacked, since main no longer sits beside them.
-@mixin stacked-panels {
+// in the two-column layout, since main no longer sits beside them.
+@mixin two-column-panels {
   position: static;
   top: auto;
   background: none;
   padding-right: 0;
 }
 
-@mixin stacked-panel-card {
+@mixin two-column-panel-card {
   flex: 1 1 auto;
   width: auto;
 }
 
-@function main-track($width) {
-  @if $width == max {
-    @return minmax(0, 1fr);
-  }
-
-  @return minmax(0, #{$width});
+// Signals to a descendant component's own stylesheet (e.g. side-panel's)
+// that the two-column layout is active, via a CSS container style query
+// (`@container style(--two-column-layout: true)`), since :has()-based
+// selectors here can't reach past a child component's view encapsulation.
+@mixin two-column-layout-flag {
+  --two-column-layout: true;
 }
 
-// Emits the per-page 3-column grid-template-columns (main track sized to
-// that page's optimal width) plus a @container rule that collapses to the
-// stacked layout once the page shell is narrower than that optimal width.
+// `fr` units only weight how leftover space is split between tracks, so a
+// `max`-width page's main column needs a much larger share than the side
+// panels' `1fr` tracks to actually claim "the rest of the row" instead of
+// splitting it three ways evenly.
+$max-width-fr: 100fr;
+
+// $width: a single entry's map, e.g. (optimal: max, min: 50rem).
+@function main-track($width) {
+  $optimal: map.get($width, optimal);
+
+  @if $optimal == max {
+    $min: map.get($width, min) or 0;
+    @return minmax(#{$min}, $max-width-fr);
+  }
+
+  @return minmax(0, #{$optimal});
+}
+
+// Emits the per-page three-column grid-template-columns (main track sized
+// to that page's optimal width) plus a @container rule that collapses to
+// the two-column layout once the page shell is narrower than that width.
+// Fixed pages break on process-info + optimal + side-panel; `max` pages
+// with a `min` floor break on process-info + min + side-panel instead (a
+// `max` page with no `min` has nothing to break on of its own — it relies
+// on the outer minimum-width fallback in app.scss).
 @mixin page-layout-containers {
-  @each $selector, $width in $page-optimal-widths {
-    .package-layout:has(#{$selector}) {
+  @each $selector, $width in $page-widths {
+    $optimal: optimal-width($width);
+    $min: map.get($width, min);
+    $breakpoint-width: if($optimal != max, $optimal, $min);
+
+    .sof-layout:has(#{$selector}) {
       grid-template-columns:
         minmax(#{$process-info-width}, 1fr) main-track($width)
         minmax(#{$side-panel-width}, 1fr);
     }
 
-    @if $width != max {
-      @container page-shell (width < #{$process-info-width + $width + $side-panel-width}) {
-        .package-layout:has(#{$selector}) {
-          @include stacked-layout;
-          @include stacked-centering($width);
+    @if $breakpoint-width {
+      @container page-shell (width < #{$process-info-width + $breakpoint-width + $side-panel-width}) {
+        .sof-layout:has(#{$selector}) {
+          @include two-column-layout;
+          @include two-column-centering($breakpoint-width);
         }
 
-        .package-layout:has(#{$selector}) .process-info,
-        .package-layout:has(#{$selector}) .side-panel {
-          @include stacked-panels;
+        .sof-layout:has(#{$selector}) .process-info,
+        .sof-layout:has(#{$selector}) .side-panel {
+          @include two-column-panels;
         }
 
-        .package-layout:has(#{$selector}) .process-info .card,
-        .package-layout:has(#{$selector}) .side-panel .card {
-          @include stacked-panel-card;
+        .sof-layout:has(#{$selector}) .process-info .card {
+          @include two-column-panel-card;
+        }
+
+        .sof-layout:has(#{$selector}) .side-panel {
+          @include two-column-layout-flag;
+        }
+
+        .sof-layout:has(#{$selector}) .side-panel app-side-panel {
+          @include two-column-panel-card;
         }
       }
     }
