@@ -1,1 +1,91 @@
-<app-insurance-package></app-insurance-package>
+<div class="autocomplete-demo__state">
+  <div>Searching: {{ agentAutocompleteState.isSearching }}</div>
+  <div>Selected: {{ selectedAgent?.id?.login || 'none' }}</div>
+  <div>Search text: {{ agentSearchText || 'empty' }}</div>
+</div>
+
+<div style="height: 5rem"></div>
+
+<mat-form-field appearance="outline">
+  <mat-label>Agent</mat-label>
+
+  <input
+    #agentAutocompleteState="sofMaterialAutocomplete"
+    matInput
+    sofMaterialAutocomplete
+    [matAutocomplete]="agentAutocomplete"
+    [selectedValue]="selectedAgent"
+    [isValueEmptyFn]="agentValueEmpty"
+    [searchText]="agentSearchText"
+    [displayWith]="agentDisplayWith"
+    [compareWith]="agentCompareWith"
+    (selectedValueChange)="handleAgentValueChange($event)"
+    (searchTextChange)="handleAgentSearchTextChange($event)"
+  />
+
+  <button
+    *ngIf="agentAutocompleteState.canClear"
+    matSuffix
+    mat-icon-button
+    type="button"
+    aria-label="Clear value"
+    (mousedown)="$event.preventDefault()"
+    (click)="agentAutocompleteState.clear($event)"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <mat-autocomplete #agentAutocomplete="matAutocomplete">
+    <mat-option [hidden]="!agentAutocompleteState.noSuggestions" disabled> No suggestions </mat-option>
+
+    <mat-option *ngFor="let item of filteredAgentOptions$ | async" [value]="item">
+      {{ agentDisplayWith(item) }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+
+<div class="autocomplete-demo__state">
+  <div>Searching: {{ cityAutocompleteState.isSearching }}</div>
+  <div>Selected: {{ selectedCityId || 'none' }}</div>
+  <div>Search text: {{ citySearchText || 'empty' }}</div>
+</div>
+
+<div style="height: 5rem"></div>
+
+<mat-form-field appearance="outline">
+  <mat-label>City</mat-label>
+
+  <input
+    #cityAutocompleteState="sofMaterialAutocomplete"
+    matInput
+    sofMaterialAutocomplete
+    [matAutocomplete]="cityAutocomplete"
+    [selectedValue]="selectedCityId"
+    [isValueEmptyFn]="cityValueEmpty"
+    [searchText]="citySearchText"
+    [displayWith]="cityDisplayWith"
+    [compareWith]="cityCompareWith"
+    (selectedValueChange)="handleCityValueChange($event)"
+    (searchTextChange)="handleCitySearchTextChange($event)"
+  />
+
+  <button
+    *ngIf="cityAutocompleteState.canClear"
+    matSuffix
+    mat-icon-button
+    type="button"
+    aria-label="Clear value"
+    (mousedown)="$event.preventDefault()"
+    (click)="cityAutocompleteState.clear($event)"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <mat-autocomplete #cityAutocomplete="matAutocomplete">
+    <mat-option [hidden]="!cityAutocompleteState.noSuggestions" disabled> No suggestions </mat-option>
+
+    <mat-option *ngFor="let option of filteredCityOptions$ | async" [value]="option.id">
+      {{ option.name }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
