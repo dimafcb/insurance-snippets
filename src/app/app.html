@@ -15,9 +15,10 @@
     sofMaterialAutocomplete
     [matAutocomplete]="agentAutocomplete"
     [selectedValue]="selectedAgent"
-    [isValueEmptyFn]="agentValueEmpty"
+    [isValueEmpty]="agentIsValueEmpty"
     [searchText]="agentSearchText"
-    [displayWith]="agentDisplayWith"
+    [valueDisplayWith]="agentValueDisplayWith"
+    [optionDisplayWith]="agentOptionDisplayWith"
     [compareWith]="agentCompareWith"
     (selectedValueChange)="handleAgentValueChange($event)"
     (searchTextChange)="handleAgentSearchTextChange($event)"
@@ -39,7 +40,7 @@
     <mat-option [hidden]="!agentAutocompleteState.noSuggestions" disabled> No suggestions </mat-option>
 
     <mat-option *ngFor="let item of filteredAgentOptions$ | async" [value]="item">
-      {{ agentDisplayWith(item) }}
+      {{ agentOptionDisplayWith(item) }}
     </mat-option>
   </mat-autocomplete>
 </mat-form-field>
@@ -61,9 +62,10 @@
     sofMaterialAutocomplete
     [matAutocomplete]="cityAutocomplete"
     [selectedValue]="selectedCityId"
-    [isValueEmptyFn]="cityValueEmpty"
+    [isValueEmpty]="cityIsValueEmpty"
     [searchText]="citySearchText"
-    [displayWith]="cityDisplayWith"
+    [valueDisplayWith]="cityValueDisplayWith"
+    [optionDisplayWith]="cityOptionDisplayWith"
     [compareWith]="cityCompareWith"
     (selectedValueChange)="handleCityValueChange($event)"
     (searchTextChange)="handleCitySearchTextChange($event)"
@@ -84,7 +86,7 @@
   <mat-autocomplete #cityAutocomplete="matAutocomplete">
     <mat-option [hidden]="!cityAutocompleteState.noSuggestions" disabled> No suggestions </mat-option>
 
-    <mat-option *ngFor="let option of filteredCityOptions$ | async" [value]="option.id">
+    <mat-option *ngFor="let option of filteredCityOptions$ | async" [value]="option">
       {{ option.name }}
     </mat-option>
   </mat-autocomplete>

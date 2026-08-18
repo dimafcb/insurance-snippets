@@ -37,11 +37,12 @@ export class AutocompleteDirective<
 {
   @Input() selectedValue: T | null = null;
   @Input() searchText: string | null | undefined = '';
-  @Input({ required: true }) isValueEmptyFn!: (value: T | null) => boolean;
-  @Input({ required: true }) displayWith!: (value: T | O) => string;
+  @Input({ required: true }) isValueEmpty!: (value: T | null) => boolean;
+  @Input({ required: true }) valueDisplayWith!: (value: T) => string;
+  @Input({ required: true }) optionDisplayWith!: (option: O) => string;
   @Input({ required: true }) compareWith!: (value: T | null, optionValue: O) => boolean;
 
-  @Output() readonly selectedValueChange = new EventEmitter<T | null>();
+  @Output() readonly selectedValueChange = new EventEmitter<O | null>();
   @Output() readonly searchTextChange = new EventEmitter<string>();
 
   noSuggestions = false;
@@ -51,9 +52,7 @@ export class AutocompleteDirective<
   }
 
   get canClear(): boolean {
-    return (
-      !this.isValueEmptyFn(this.selectedValue) || !this.isSearchTextEmpty || this.inputHasValue
-    );
+    return !this.isValueEmpty(this.selectedValue) || !this.isSearchTextEmpty || this.inputHasValue;
   }
 
   get inputValue(): string {
@@ -81,6 +80,7 @@ export class AutocompleteDirective<
   private isFocused = false;
   private ignoreNextFocus = false;
   private justSelectedOption = false;
+  private lastSelectedOption: O | null = null;
 
   ngAfterViewInit(): void {
     this.syncAutocomplete();
@@ -91,6 +91,14 @@ export class AutocompleteDirective<
   ngOnChanges(changes: TypedComponentChanges<AutocompleteDirective<T>>): void {
     if (!changes.selectedValue && !changes.searchText) {
       return;
+    }
+
+    if (
+      changes.selectedValue &&
+      this.lastSelectedOption != null &&
+      !this.compareWith(this.selectedValue, this.lastSelectedOption)
+    ) {
+      this.lastSelectedOption = null;
     }
 
     this.scheduleNoSuggestionsRefresh();
@@ -182,13 +190,14 @@ export class AutocompleteDirective<
     );
     this.subscription.add(
       autocomplete.optionSelected.subscribe((selection) => {
-        const value = selection.option.value as T | null;
+        const optionValue = selection.option.value as O;
 
         this.ignoreNextFocus = true;
         this.justSelectedOption = true;
-        this.selectedValueChange.emit(value);
+        this.lastSelectedOption = optionValue;
+        this.selectedValueChange.emit(optionValue);
         this.emitSearchTextChange('');
-        this.setInputValue(this.getValueDisplayText(value));
+        this.setInputValue(this.optionDisplayWith(optionValue));
         this.scheduleNoSuggestionsRefresh();
       }),
     );
@@ -199,7 +208,7 @@ export class AutocompleteDirective<
       return;
     }
 
-    autocomplete.displayWith = this.displayWith ?? null;
+    autocomplete.displayWith = this.optionDisplayWith ?? null;
   }
 
   private syncSelectedOption(): void {
@@ -250,7 +259,11 @@ export class AutocompleteDirective<
       return '';
     }
 
-    return this.displayWith(value);
+    if (this.lastSelectedOption != null && this.compareWith(value, this.lastSelectedOption)) {
+      return this.optionDisplayWith(this.lastSelectedOption);
+    }
+
+    return this.valueDisplayWith(value);
   }
 
   private computeDisplayedInputValue(): string {

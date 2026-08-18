@@ -66,15 +66,10 @@ export class App {
     },
   ];
 
-  readonly agentDisplayWith = (item: AgentOption | Agent): string => {
-    if ('surname' in item) {
-      return `${item.name} ${item.surname}`;
-    }
+  readonly agentValueDisplayWith = (value: Agent): string => value.name;
+  readonly agentOptionDisplayWith = (option: AgentOption): string => `${option.name} ${option.surname}`;
 
-    return item.name;
-  };
-
-  readonly agentValueEmpty = (item: Agent | null): boolean => !item?.id;
+  readonly agentIsValueEmpty = (item: Agent | null): boolean => !item;
   readonly agentCompareWith = (item: Agent | null, option: AgentOption): boolean => {
     if (!item) {
       return false;
@@ -96,15 +91,15 @@ export class App {
       of(
         normalizedSearch
           ? this.agentOptions.filter((item) =>
-              this.agentDisplayWith(item).toLowerCase().includes(normalizedSearch),
+              this.agentOptionDisplayWith(item).toLowerCase().includes(normalizedSearch),
             )
           : this.agentOptions,
       ).pipe(delay(Math.floor(Math.random() * 501))),
     ),
   );
 
-  handleAgentValueChange(value: Agent | null): void {
-    this.selectedAgent = value;
+  handleAgentValueChange(option: AgentOption | null): void {
+    this.selectedAgent = option ? { id: option.id, name: `${option.name} ${option.surname}` } : null;
   }
 
   handleAgentSearchTextChange(value: string | null | undefined): void {
@@ -121,12 +116,11 @@ export class App {
     { id: 'tok', name: 'Tokyo' },
   ];
 
-  readonly cityDisplayWith = (id: string): string => {
-    return this.cityOptions.find((option) => option.id === id)?.name ?? id;
-  };
+  readonly cityValueDisplayWith = (id: string): string => id;
+  readonly cityOptionDisplayWith = (option: CityOption): string => option.name;
 
-  readonly cityValueEmpty = (id: string | null): boolean => !id;
-  readonly cityCompareWith = (id: string | null, optionId: string): boolean => id === optionId;
+  readonly cityIsValueEmpty = (id: string | null): boolean => !id;
+  readonly cityCompareWith = (id: string | null, option: CityOption): boolean => id === option.id;
 
   selectedCityId: string | null = 'lon';
 
@@ -145,8 +139,8 @@ export class App {
     ),
   );
 
-  handleCityValueChange(value: string | null): void {
-    this.selectedCityId = value;
+  handleCityValueChange(option: CityOption | null): void {
+    this.selectedCityId = option ? option.id : null;
   }
 
   handleCitySearchTextChange(value: string | null | undefined): void {
