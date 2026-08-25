@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { BehaviorSubject, Observable, delay, map, of, switchMap } from 'rxjs';
 import { AutocompleteDirective } from './material-autocomplete.directive';
 
@@ -36,8 +39,10 @@ interface CityOption {
   templateUrl: './app.html',
   imports: [
     CommonModule,
+    FormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatIconModule,
@@ -46,6 +51,22 @@ interface CityOption {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
+  readonly coverageOptions: string[] = ['Basic', 'Standard', 'Premium'];
+  selectedCoverage = 'Standard';
+
+  policyHolderName = 'Jane Doe';
+  policyNotes = '';
+
+  private readonly iconRegistry = inject(MatIconRegistry);
+  private readonly sanitizer = inject(DomSanitizer);
+
+  constructor() {
+    this.iconRegistry.addSvgIcon(
+      'close',
+      this.sanitizer.bypassSecurityTrustResourceUrl('icons/close.svg'),
+    );
+  }
+
   private readonly agentSearchTextSubject = new BehaviorSubject<string>('');
 
   readonly agentOptions: AgentOption[] = [

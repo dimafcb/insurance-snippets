@@ -1,0 +1,47 @@
+@use 'sass:map';
+@use 'variables' as *;
+@use 'material-mixins' as mixins;
+
+mat-form-field.mat-mdc-form-field {
+  &:not(.mat-form-field-small):not(.mat-form-field-medium) {
+    @include mixins.mat-form-field-size(3rem, 16px);
+  }
+
+  &.mat-form-field-medium {
+    @include mixins.mat-form-field-size(2.5rem, 14px);
+  }
+
+  &.mat-form-field-small {
+    @include mixins.mat-form-field-size(2rem, 12px);
+  }
+
+  &.mat-form-field-appearance-fill {
+    --mat-form-field-filled-container-color: var(--mat-sys-surface-container-low);
+  }
+
+  &.mat-form-field-transparent {
+    --mat-form-field-filled-container-color: transparent;
+  }
+
+  &.mat-form-field-no-hint {
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+  }
+
+  &.mat-form-field-no-underline {
+    .mdc-line-ripple {
+      display: none;
+    }
+  }
+}
+
+mat-option.mat-mdc-option {
+  &[hidden] {
+    display: none !important;
+  }
+}
+
+.mat-mdc-select-panel {
+  min-width: 10rem;
+}

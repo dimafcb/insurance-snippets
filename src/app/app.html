@@ -1,3 +1,96 @@
+<section class="select-demo">
+  <mat-form-field class="mat-form-field-small" appearance="fill">
+    <mat-label>Coverage (small / fill)</mat-label>
+    <mat-select [(value)]="selectedCoverage">
+      @for (option of coverageOptions; track option) {
+        <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="mat-form-field-small" appearance="outline">
+    <mat-label>Coverage (small / outline)</mat-label>
+    <mat-select [(value)]="selectedCoverage">
+      @for (option of coverageOptions; track option) {
+        <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="mat-form-field-medium" appearance="fill">
+    <mat-label>Coverage (medium / fill)</mat-label>
+    <mat-select [(value)]="selectedCoverage">
+      @for (option of coverageOptions; track option) {
+        <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="mat-form-field-medium" appearance="outline">
+    <mat-label>Coverage (medium / outline)</mat-label>
+    <mat-select [(value)]="selectedCoverage">
+      @for (option of coverageOptions; track option) {
+        <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="mat-form-field-normal" appearance="fill">
+    <mat-label>Coverage (normal / fill)</mat-label>
+    <mat-select [(value)]="selectedCoverage">
+      @for (option of coverageOptions; track option) {
+        <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="mat-form-field-normal" appearance="outline">
+    <mat-label>Coverage (normal / outline)</mat-label>
+    <mat-select [(value)]="selectedCoverage">
+      @for (option of coverageOptions; track option) {
+        <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</section>
+
+<section class="select-demo">
+  <mat-form-field class="mat-form-field-small" appearance="fill">
+    <mat-label>Policy holder (small / fill)</mat-label>
+    <input matInput [(ngModel)]="policyHolderName" name="policyHolderNameSmallFill" />
+  </mat-form-field>
+
+  <mat-form-field class="mat-form-field-small" appearance="outline">
+    <mat-label>Policy holder (small / outline)</mat-label>
+    <input matInput [(ngModel)]="policyHolderName" name="policyHolderNameSmallOutline" />
+  </mat-form-field>
+
+  <mat-form-field class="mat-form-field-medium" appearance="fill">
+    <mat-label>Policy holder (fill)</mat-label>
+    <input matInput [(ngModel)]="policyHolderName" name="policyHolderNameFill" />
+  </mat-form-field>
+
+  <mat-form-field class="mat-form-field-medium" appearance="outline">
+    <mat-label>Policy holder (outline)</mat-label>
+    <input matInput [(ngModel)]="policyHolderName" name="policyHolderNameOutline" />
+  </mat-form-field>
+
+  <mat-form-field class="mat-form-field-medium mat-form-field-fill-transparent" appearance="fill">
+    <mat-label>Policy holder (fill, transparent)</mat-label>
+    <input matInput [(ngModel)]="policyHolderName" name="policyHolderNameTransparent" />
+  </mat-form-field>
+
+  <mat-form-field class="mat-form-field-medium" appearance="fill">
+    <mat-label>Notes (fill)</mat-label>
+    <textarea matInput [(ngModel)]="policyNotes" name="policyNotesFill" rows="3"></textarea>
+  </mat-form-field>
+
+  <mat-form-field class="mat-form-field-medium" appearance="outline">
+    <mat-label>Notes (outline)</mat-label>
+    <textarea matInput [(ngModel)]="policyNotes" name="policyNotesOutline" rows="3"></textarea>
+  </mat-form-field>
+</section>
+
 <div class="autocomplete-demo__state">
   <div>Searching: {{ agentAutocompleteState.isSearching }}</div>
   <div>Selected: {{ selectedAgent?.id?.login || 'none' }}</div>
@@ -6,7 +99,7 @@
 
 <div style="height: 5rem"></div>
 
-<mat-form-field appearance="outline">
+<mat-form-field appearance="outline" class="mat-form-field-medium">
   <mat-label>Agent</mat-label>
 
   <input
@@ -22,26 +115,29 @@
     [compareWith]="agentCompareWith"
     (selectedValueChange)="handleAgentValueChange($event)"
     (searchTextChange)="handleAgentSearchTextChange($event)"
-  />
+    />
 
-  <button
-    *ngIf="agentAutocompleteState.canClear"
-    matSuffix
-    mat-icon-button
-    type="button"
-    aria-label="Clear value"
-    (mousedown)="$event.preventDefault()"
-    (click)="agentAutocompleteState.clear($event)"
-  >
-    <mat-icon>close</mat-icon>
-  </button>
+  @if (agentAutocompleteState.canClear) {
+    <button
+      matSuffix
+      mat-icon-button
+      type="button"
+      aria-label="Clear value"
+      (mousedown)="$event.preventDefault()"
+      (click)="agentAutocompleteState.clear($event)"
+      >
+      <mat-icon svgIcon="close"></mat-icon>
+    </button>
+  }
 
   <mat-autocomplete #agentAutocomplete="matAutocomplete">
     <mat-option [hidden]="!agentAutocompleteState.noSuggestions" disabled> No suggestions </mat-option>
 
-    <mat-option *ngFor="let item of filteredAgentOptions$ | async" [value]="item">
-      {{ agentOptionDisplayWith(item) }}
-    </mat-option>
+    @for (item of filteredAgentOptions$ | async; track item) {
+      <mat-option [value]="item">
+        {{ agentOptionDisplayWith(item) }}
+      </mat-option>
+    }
   </mat-autocomplete>
 </mat-form-field>
 
@@ -53,7 +149,7 @@
 
 <div style="height: 5rem"></div>
 
-<mat-form-field appearance="outline">
+<mat-form-field appearance="outline" class="mat-form-field-small">
   <mat-label>City</mat-label>
 
   <input
@@ -69,25 +165,28 @@
     [compareWith]="cityCompareWith"
     (selectedValueChange)="handleCityValueChange($event)"
     (searchTextChange)="handleCitySearchTextChange($event)"
-  />
+    />
 
-  <button
-    *ngIf="cityAutocompleteState.canClear"
-    matSuffix
-    mat-icon-button
-    type="button"
-    aria-label="Clear value"
-    (mousedown)="$event.preventDefault()"
-    (click)="cityAutocompleteState.clear($event)"
-  >
-    <mat-icon>close</mat-icon>
-  </button>
+  @if (cityAutocompleteState.canClear) {
+    <button
+      matSuffix
+      mat-icon-button
+      type="button"
+      aria-label="Clear value"
+      (mousedown)="$event.preventDefault()"
+      (click)="cityAutocompleteState.clear($event)"
+      >
+      <mat-icon svgIcon="close"></mat-icon>
+    </button>
+  }
 
   <mat-autocomplete #cityAutocomplete="matAutocomplete">
     <mat-option [hidden]="!cityAutocompleteState.noSuggestions" disabled> No suggestions </mat-option>
 
-    <mat-option *ngFor="let option of filteredCityOptions$ | async" [value]="option">
-      {{ option.name }}
-    </mat-option>
+    @for (option of filteredCityOptions$ | async; track option) {
+      <mat-option [value]="option">
+        {{ option.name }}
+      </mat-option>
+    }
   </mat-autocomplete>
 </mat-form-field>

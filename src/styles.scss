@@ -1,0 +1,19 @@
+@use 'material-overrides';
+@use 'variables';
+@use 'material-theme' as *;
+
+html {
+  font-size: variables.$root-font-size;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  padding: 2rem;
+}
+
+
+@include material-theme();

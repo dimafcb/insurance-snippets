@@ -1,0 +1,19 @@
+@use '@angular/material' as mat;
+@use 'variables' as *;
+
+@mixin material-theme() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: (
+        plain-family: $font-family,
+        brand-family: $font-family,
+      ),
+      density: 0,
+    )
+  );
+}

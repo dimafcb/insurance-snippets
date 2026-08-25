@@ -1,3 +1,15 @@
 mat-option[hidden] {
   display: none !important;
 }
+
+.select-demo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.select-demo mat-form-field {
+  width: 16rem;
+}
