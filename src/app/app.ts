@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, QueryList, ViewChildren, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -10,6 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BehaviorSubject, Observable, delay, map, of, switchMap } from 'rxjs';
 import { AutocompleteDirective } from './material-autocomplete.directive';
+import { SofValidateDirective } from './shared/validation/sof-validate.directive';
+import { required } from './shared/validation/validators';
 
 interface AgentIdentifier {
   agentId: string;
@@ -47,12 +49,27 @@ interface CityOption {
     MatButtonModule,
     MatIconModule,
     AutocompleteDirective,
+    SofValidateDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
   readonly coverageOptions: string[] = ['Basic', 'Standard', 'Premium'];
-  selectedCoverage = 'Standard';
+  selectedCoverage = '';
+
+  readonly required = required;
+  @ViewChildren(SofValidateDirective) private readonly validatedControls!: QueryList<SofValidateDirective>;
+  submitAttempted = false;
+  lastSubmitValid: boolean | null = null;
+
+  onSubmit(): void {
+    let allValid = true;
+    this.validatedControls.forEach((control) => {
+      allValid = control.validate() && allValid;
+    });
+    this.lastSubmitValid = allValid;
+    this.submitAttempted = true;
+  }
 
   policyHolderName = 'Jane Doe';
   policyNotes = '';

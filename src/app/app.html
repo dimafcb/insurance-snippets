@@ -1,58 +1,113 @@
 <section class="select-demo">
   <mat-form-field class="mat-form-field-small" appearance="fill">
     <mat-label>Coverage (small / fill)</mat-label>
-    <mat-select [(value)]="selectedCoverage">
+    <mat-select
+      [(ngModel)]="selectedCoverage"
+      name="coverageSmallFill"
+      [sofValidators]="[required()]"
+      #v1="sofValidators"
+      >
       @for (option of coverageOptions; track option) {
         <mat-option [value]="option">{{ option }}</mat-option>
       }
     </mat-select>
+    @if (v1.errors['required']) {
+      <mat-error>This field is required.</mat-error>
+    }
   </mat-form-field>
 
   <mat-form-field class="mat-form-field-small" appearance="outline">
     <mat-label>Coverage (small / outline)</mat-label>
-    <mat-select [(value)]="selectedCoverage">
+    <mat-select
+      [(ngModel)]="selectedCoverage"
+      name="coverageSmallOutline"
+      [sofValidators]="[required()]"
+      #v2="sofValidators"
+      >
       @for (option of coverageOptions; track option) {
         <mat-option [value]="option">{{ option }}</mat-option>
       }
     </mat-select>
+    @if (v2.errors['required']) {
+      <mat-error>This field is required.</mat-error>
+    }
   </mat-form-field>
 
   <mat-form-field class="mat-form-field-medium" appearance="fill">
     <mat-label>Coverage (medium / fill)</mat-label>
-    <mat-select [(value)]="selectedCoverage">
+    <mat-select
+      [(ngModel)]="selectedCoverage"
+      name="coverageMediumFill"
+      [sofValidators]="[required()]"
+      #v3="sofValidators"
+      >
       @for (option of coverageOptions; track option) {
         <mat-option [value]="option">{{ option }}</mat-option>
       }
     </mat-select>
+    @if (v3.errors['required']) {
+      <mat-error>This field is required.</mat-error>
+    }
   </mat-form-field>
 
   <mat-form-field class="mat-form-field-medium" appearance="outline">
     <mat-label>Coverage (medium / outline)</mat-label>
-    <mat-select [(value)]="selectedCoverage">
+    <mat-select
+      [(ngModel)]="selectedCoverage"
+      name="coverageMediumOutline"
+      [sofValidators]="[required()]"
+      #v4="sofValidators"
+      >
       @for (option of coverageOptions; track option) {
         <mat-option [value]="option">{{ option }}</mat-option>
       }
     </mat-select>
+    @if (v4.errors['required']) {
+      <mat-error>This field is required.</mat-error>
+    }
   </mat-form-field>
 
   <mat-form-field class="mat-form-field-normal" appearance="fill">
     <mat-label>Coverage (normal / fill)</mat-label>
-    <mat-select [(value)]="selectedCoverage">
+    <mat-select
+      [(ngModel)]="selectedCoverage"
+      name="coverageNormalFill"
+      [sofValidators]="[required()]"
+      #v5="sofValidators"
+      >
       @for (option of coverageOptions; track option) {
         <mat-option [value]="option">{{ option }}</mat-option>
       }
     </mat-select>
+    @if (v5.errors['required']) {
+      <mat-error>This field is required.</mat-error>
+    }
   </mat-form-field>
 
   <mat-form-field class="mat-form-field-normal" appearance="outline">
     <mat-label>Coverage (normal / outline)</mat-label>
-    <mat-select [(value)]="selectedCoverage">
+    <mat-select
+      [(ngModel)]="selectedCoverage"
+      name="coverageNormalOutline"
+      [sofValidators]="[required()]"
+      #v6="sofValidators"
+      >
       @for (option of coverageOptions; track option) {
         <mat-option [value]="option">{{ option }}</mat-option>
       }
     </mat-select>
+    @if (v6.errors['required']) {
+      <mat-error>This field is required.</mat-error>
+    }
   </mat-form-field>
 </section>
+
+<div class="form-actions">
+  <button mat-flat-button type="button" (click)="onSubmit()">Submit</button>
+  @if (submitAttempted) {
+    <span class="form-actions__status">{{ lastSubmitValid ? 'All valid' : 'Fix errors above' }}</span>
+  }
+</div>
 
 <section class="select-demo">
   <mat-form-field class="mat-form-field-small" appearance="fill">
