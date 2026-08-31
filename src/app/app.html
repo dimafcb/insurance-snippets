@@ -2,11 +2,12 @@
   <mat-form-field class="mat-form-field-small" appearance="fill">
     <mat-label>Coverage (small / fill)</mat-label>
     <mat-select
+      disabled
       [(ngModel)]="selectedCoverage"
       name="coverageSmallFill"
       [sofValidators]="[required()]"
       #v1="sofValidators"
-      >
+    >
       @for (option of coverageOptions; track option) {
         <mat-option [value]="option">{{ option }}</mat-option>
       }
@@ -19,11 +20,12 @@
   <mat-form-field class="mat-form-field-small" appearance="outline">
     <mat-label>Coverage (small / outline)</mat-label>
     <mat-select
+      disabled
       [(ngModel)]="selectedCoverage"
       name="coverageSmallOutline"
       [sofValidators]="[required()]"
       #v2="sofValidators"
-      >
+    >
       @for (option of coverageOptions; track option) {
         <mat-option [value]="option">{{ option }}</mat-option>
       }
@@ -40,7 +42,7 @@
       name="coverageMediumFill"
       [sofValidators]="[required()]"
       #v3="sofValidators"
-      >
+    >
       @for (option of coverageOptions; track option) {
         <mat-option [value]="option">{{ option }}</mat-option>
       }
@@ -57,7 +59,7 @@
       name="coverageMediumOutline"
       [sofValidators]="[required()]"
       #v4="sofValidators"
-      >
+    >
       @for (option of coverageOptions; track option) {
         <mat-option [value]="option">{{ option }}</mat-option>
       }
@@ -74,7 +76,7 @@
       name="coverageNormalFill"
       [sofValidators]="[required()]"
       #v5="sofValidators"
-      >
+    >
       @for (option of coverageOptions; track option) {
         <mat-option [value]="option">{{ option }}</mat-option>
       }
@@ -91,7 +93,7 @@
       name="coverageNormalOutline"
       [sofValidators]="[required()]"
       #v6="sofValidators"
-      >
+    >
       @for (option of coverageOptions; track option) {
         <mat-option [value]="option">{{ option }}</mat-option>
       }
@@ -105,7 +107,9 @@
 <div class="form-actions">
   <button mat-flat-button type="button" (click)="onSubmit()">Submit</button>
   @if (submitAttempted) {
-    <span class="form-actions__status">{{ lastSubmitValid ? 'All valid' : 'Fix errors above' }}</span>
+    <span class="form-actions__status">{{
+      lastSubmitValid ? 'All valid' : 'Fix errors above'
+    }}</span>
   }
 </div>
 
@@ -170,7 +174,7 @@
     [compareWith]="agentCompareWith"
     (selectedValueChange)="handleAgentValueChange($event)"
     (searchTextChange)="handleAgentSearchTextChange($event)"
-    />
+  />
 
   @if (agentAutocompleteState.canClear) {
     <button
@@ -180,13 +184,15 @@
       aria-label="Clear value"
       (mousedown)="$event.preventDefault()"
       (click)="agentAutocompleteState.clear($event)"
-      >
+    >
       <mat-icon svgIcon="close"></mat-icon>
     </button>
   }
 
   <mat-autocomplete #agentAutocomplete="matAutocomplete">
-    <mat-option [hidden]="!agentAutocompleteState.noSuggestions" disabled> No suggestions </mat-option>
+    <mat-option [hidden]="!agentAutocompleteState.noSuggestions" disabled>
+      No suggestions
+    </mat-option>
 
     @for (item of filteredAgentOptions$ | async; track item) {
       <mat-option [value]="item">
@@ -220,7 +226,7 @@
     [compareWith]="cityCompareWith"
     (selectedValueChange)="handleCityValueChange($event)"
     (searchTextChange)="handleCitySearchTextChange($event)"
-    />
+  />
 
   @if (cityAutocompleteState.canClear) {
     <button
@@ -230,13 +236,15 @@
       aria-label="Clear value"
       (mousedown)="$event.preventDefault()"
       (click)="cityAutocompleteState.clear($event)"
-      >
+    >
       <mat-icon svgIcon="close"></mat-icon>
     </button>
   }
 
   <mat-autocomplete #cityAutocomplete="matAutocomplete">
-    <mat-option [hidden]="!cityAutocompleteState.noSuggestions" disabled> No suggestions </mat-option>
+    <mat-option [hidden]="!cityAutocompleteState.noSuggestions" disabled>
+      No suggestions
+    </mat-option>
 
     @for (option of filteredCityOptions$ | async; track option) {
       <mat-option [value]="option">

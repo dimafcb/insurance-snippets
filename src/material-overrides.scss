@@ -34,6 +34,20 @@ mat-form-field.mat-mdc-form-field {
       display: none;
     }
   }
+
+  &.mat-form-field-disabled {
+    --mat-form-field-disabled-input-text-color: var(--mat-sys-on-surface-variant);
+
+    .mdc-text-field--disabled {
+      background-color: color-mix(in srgb, var(--mat-sys-surface-container-highest) 60%, transparent);
+    }
+
+    .mdc-text-field__input:disabled,
+    .mat-mdc-select-value {
+      color: var(--mat-sys-on-surface-variant);
+      -webkit-text-fill-color: var(--mat-sys-on-surface-variant);
+    }
+  }
 }
 
 mat-option.mat-mdc-option {

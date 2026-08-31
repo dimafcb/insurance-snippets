@@ -69,6 +69,9 @@ export class SofValidateDirective implements OnInit, OnDestroy {
 
   @HostListener('blur')
   onBlur(): void {
+    if (this.ngModel.disabled) {
+      return;
+    }
     this.markAsTouched();
   }
 
@@ -78,6 +81,9 @@ export class SofValidateDirective implements OnInit, OnDestroy {
   }
 
   validate(): boolean {
+    if (this.ngModel.disabled) {
+      return true;
+    }
     this.touched = true;
     this.runValidation();
     this.refreshErrorState();
@@ -85,6 +91,10 @@ export class SofValidateDirective implements OnInit, OnDestroy {
   }
 
   private runValidation(): void {
+    if (this.ngModel.disabled) {
+      this.errors = {};
+      return;
+    }
     const value = this.ngModel.control.value;
     this.errors = this.validators.reduce<SofValidationErrors>((acc, fn) => {
       const result = fn(value);
